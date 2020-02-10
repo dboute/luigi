@@ -12,14 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import be.vdab.luigi.domain.Pizza;
+import be.vdab.luigi.exceptions.KoersClientException;
+import be.vdab.luigi.services.EuroService;
 
 @Controller
 @RequestMapping("pizzas")
 class PizzaController {
+    private final EuroService euroService;
+
     private final Pizza[] pizzas = {
             new Pizza(1, "Prosciutto", BigDecimal.valueOf(4), true),
             new Pizza(2, "Margherita", BigDecimal.valueOf(5), false),
             new Pizza(3, "Calzone", BigDecimal.valueOf(4), false)};
+
+    PizzaController(EuroService euroService) {
+        this.euroService = euroService;
+    }
 
     @GetMapping
     public ModelAndView pizzas() {
@@ -30,7 +38,15 @@ class PizzaController {
     public ModelAndView pizza(@PathVariable long id) {
         ModelAndView modelAndView = new ModelAndView("pizza");
         Arrays.stream(pizzas).filter(pizza -> pizza.getId() == id).findFirst()
-                .ifPresent(pizza -> modelAndView.addObject(pizza));
+                .ifPresent(pizza -> {
+                    modelAndView.addObject("pizza", pizza);
+                    try {
+                        modelAndView.addObject(
+                                "inDollar", euroService.naarDollar(pizza.getPrijs()));
+                    } catch (KoersClientException ex) {
+                        // Hier komt later code om de exception te verwerken.
+                    }
+                });
         return modelAndView;
     }
 
@@ -52,7 +68,7 @@ class PizzaController {
 
     @GetMapping("prijzen/{prijs}")
     public ModelAndView pizzasMetEenPrijs(@PathVariable BigDecimal prijs) {
-      return new ModelAndView("prijzen", "pizzas", pizzasMetPrijs(prijs))
-              .addObject("prijzen", uniekePrijzen());
+        return new ModelAndView("prijzen", "pizzas", pizzasMetPrijs(prijs))
+                .addObject("prijzen", uniekePrijzen());
     }
 } 
