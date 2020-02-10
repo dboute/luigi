@@ -18,5 +18,8 @@
         <dt>Adres</dt>
         <dd th:object="${zaakvoerder.adres}"
             th:text="|*{straat} *{huisNr} *{postcode} *{gemeente}|"></dd>
+
+        <p>Deze pagina werd <span th:text="${aantalKeerBekeken}"></span>
+            keer bekeken.</p>
     </body>
 </html>
