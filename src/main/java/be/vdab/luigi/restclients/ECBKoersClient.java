@@ -3,7 +3,6 @@ package be.vdab.luigi.restclients;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -11,7 +10,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +22,8 @@ import be.vdab.luigi.exceptions.KoersClientException;
 class ECBKoersClient implements KoersClient {
     private final URL url;
 
-    ECBKoersClient() {
-        try {
-            this.url = new URL(
-                    "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml");
-        } catch (MalformedURLException ex) {
-            throw new KoersClientException("ECB URL is verkeerd.", ex);
-        }
+    ECBKoersClient(@Value("${ecbKoersURL}") URL url) {
+        this.url = url;
     }
 
     @Override
