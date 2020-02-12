@@ -3,12 +3,13 @@ package be.vdab.luigi.controllers;
 import java.math.BigDecimal;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import be.vdab.luigi.domain.Pizza;
+import be.vdab.luigi.forms.VanTotPrijsForm;
 import be.vdab.luigi.services.EuroService;
 import be.vdab.luigi.services.PizzaService;
 
@@ -39,11 +40,6 @@ class PizzaController {
         return modelAndView;
     }
 
-    private final Pizza[] pizzas = {
-            new Pizza(1, "Prosciutto", BigDecimal.valueOf(4), true),
-            new Pizza(2, "Margherita", BigDecimal.valueOf(5), false),
-            new Pizza(3, "Calzone", BigDecimal.valueOf(4), false)};
-
     @GetMapping("prijzen")
     public ModelAndView prijzen() {
         return new ModelAndView("prijzen", "prijzen",
@@ -55,5 +51,20 @@ class PizzaController {
         return new ModelAndView("prijzen",
                 "pizzas", pizzaService.findByPrijs(prijs))
                 .addObject("prijzen", pizzaService.findUniekePrijzen());
+    }
+
+    @GetMapping("vantotprijs/form")
+    public ModelAndView vanTotPrijsForm() {
+        return new ModelAndView("vantotprijs").addObject(new VanTotPrijsForm(null, null));
+    }
+
+    @GetMapping("vantotprijs")
+    public ModelAndView vanTotPrijs(VanTotPrijsForm form, Errors errors) {
+        ModelAndView modelAndView = new ModelAndView("vantotprijs");
+        if (errors.hasErrors()) {
+            return modelAndView;
+        }
+        return modelAndView.addObject("pizzas",
+                pizzaService.findByPrijsBetween(form.getVan(), form.getTot()));
     }
 } 
