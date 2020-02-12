@@ -6,6 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,16 +16,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import be.vdab.luigi.restclients.KoersClient;
 
-// enkele andere imports
 @ExtendWith(MockitoExtension.class)
 class DefaultEuroServiceTest {
     @Mock
     private KoersClient koersClient;
-    private EuroService euroService;
+    private final EuroService euroService;
 
-    @BeforeEach
-    void beforeEach() {
-//        euroService = new DefaultEuroService(koersClient);
+    DefaultEuroServiceTest(EuroService euroService) {
+        this.euroService = euroService;
     }
 
     @Test

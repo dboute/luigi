@@ -1,5 +1,4 @@
 package be.vdab.luigi.controllers;
-// enkele imports
 
 import java.util.Arrays;
 
