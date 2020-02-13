@@ -8,9 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import be.vdab.luigi.domain.Pizza;
 import be.vdab.luigi.forms.VanTotPrijsForm;
 import be.vdab.luigi.services.EuroService;
 import be.vdab.luigi.services.PizzaService;
@@ -69,4 +72,19 @@ class PizzaController {
         return modelAndView.addObject("pizzas",
                 pizzaService.findByPrijsBetween(form.getVan(), form.getTot()));
     }
-} 
+
+    @GetMapping("toevoegen/form")
+    public ModelAndView toevoegenForm() {
+        return new ModelAndView("toevoegen").addObject(new Pizza(0, "", null, false));
+    }
+
+    @PostMapping
+    public String toevoegen(@Valid Pizza pizza, Errors errors, RedirectAttributes redirect) {
+        if (errors.hasErrors()) {
+            return "toevoegen";
+        }
+        long id = pizzaService.create(pizza);
+        redirect.addAttribute("toegevoegd", id);
+        return "redirect:/pizzas";
+    }
+}

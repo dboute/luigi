@@ -11,11 +11,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.vdab.luigi.domain.Adres;
 import be.vdab.luigi.domain.Persoon;
+import be.vdab.luigi.sessions.Identificatie;
 
 @Controller
 @RequestMapping("/")
 class IndexController {
     private final AtomicInteger aantalKeerBekeken = new AtomicInteger();
+    private final Identificatie identificatie;
+
+    IndexController(Identificatie identificatie) {
+        this.identificatie = identificatie;
+    }
 
     private String boodschap() {
         int uur = LocalTime.now().getHour();
@@ -32,6 +38,7 @@ class IndexController {
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("index",
                 "boodschap", boodschap());
+        modelAndView.addObject(identificatie);
         modelAndView.addObject("zaakvoerder",
                 new Persoon("Luigi", "Peperone", 7, true, LocalDate.of(1966, 1, 31),
                         new Adres("Grote markt", "3", 9700, "Oudenaarde")));

@@ -14,6 +14,8 @@
             <dd th:text="*{aantalKinderen}"></dd>
             <dt>Gehuwd</dt>
             <dd th:text="*{gehuwd} ? 'Ja' : 'Nee'"></dd>
+            <dt>Geboorte</dt>
+            <dd th:text="*{{geboorte}}"></dd>
         </dl>
         <dt>Adres</dt>
         <dd th:object="${zaakvoerder.adres}"
@@ -21,5 +23,6 @@
 
         <p>Deze pagina werd <span th:text="${aantalKeerBekeken}"></span>
             keer bekeken.</p>
+        <p th:text="${identificatie.emailAdres}"></p>
     </body>
 </html>
